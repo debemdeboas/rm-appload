@@ -46,6 +46,7 @@ namespace appload::library {
         ExternalApplication(QString root);
         QString getIconPath() const;
         QString getAppName() const;
+        QString getFolder() const;
         qint64 launch(int qtfbKey, QStringList extraArgs, QMap<QString, QString> extraEnv) const;
         bool isQTFB() const;
         float aspectRatio() const;
@@ -60,6 +61,7 @@ namespace appload::library {
         QString root;
 
         QString appName;
+        QString folder;
         QString execPath;
 
         QString workingDirectory;
@@ -85,6 +87,7 @@ namespace appload::library {
 
         QString getIconPath() const;
         QString getAppName() const;
+        QString getFolder() const;
         QString getID() const;
         QString getFrontendRoot() const;
         QString getQMLEntrypoint() const;
@@ -101,7 +104,7 @@ namespace appload::library {
         int loadedFrontendInstanceCount = 0;
     private:
         QString root;
-        QString appName, appID, qmlEntrypoint;
+        QString appName, appID, qmlEntrypoint, folder;
         QString frontendRoot;
         QString internalIdentifier;
         bool loadsBackend;

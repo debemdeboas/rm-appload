@@ -73,6 +73,10 @@ QString appload::library::LoadedApplication::getAppName() const {
     return appName;
 }
 
+QString appload::library::LoadedApplication::getFolder() const {
+    return folder;
+}
+
 QString appload::library::LoadedApplication::getID() const {
     return appID;
 }
@@ -149,6 +153,7 @@ void appload::library::LoadedApplication::parseManifest(){
 
     appName = jsonObject.value("name").toString();
     appID = jsonObject.value("id").toString();
+    folder = jsonObject.value("folder").toString().trimmed();
     qmlEntrypoint = jsonObject.value("entry").toString();
     loadsBackend = jsonObject.value("loadsBackend").toBool();
     _supportsScaling = jsonObject.value("supportsScaling").toBool(false);

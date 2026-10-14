@@ -25,6 +25,7 @@ class AppLoadApplication : public QObject {
     Q_PROPERTY(QString id READ id CONSTANT)
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString icon READ icon CONSTANT)
+    Q_PROPERTY(QString folder READ folder CONSTANT)
     Q_PROPERTY(bool supportsScaling READ supportsScaling CONSTANT)
     Q_PROPERTY(bool supportsRotation READ supportsRotation CONSTANT)
     Q_PROPERTY(bool canHaveMultipleFrontends READ canHaveMultipleFrontends CONSTANT)
@@ -49,12 +50,14 @@ public:
         int width,
         bool disablesWindowedMode,
         const appload::vk::Layout *vkLayout,
+        const QString &folder,
         QObject *parent = nullptr
     ):
         QObject(parent),
         _id(id),
         _name(name),
         _icon(icon),
+        _folder(folder),
         _supportsScaling(supportsScaling),
         _supportsRotation(supportsRotation),
         _canHaveMultipleFrontends(canHaveMultipleFrontends),
@@ -71,6 +74,7 @@ public:
         _id(other._id),
         _name(other._name),
         _icon(other._icon),
+        _folder(other._folder),
         _supportsScaling(other._supportsScaling),
         _supportsRotation(other._supportsRotation),
         _canHaveMultipleFrontends(other._canHaveMultipleFrontends),
@@ -83,6 +87,7 @@ public:
     QString id() const { return _id; }
     QString name() const { return _name; }
     QString icon() const { return _icon; }
+    QString folder() const { return _folder; }
     float aspectRatio() const { return _aspectRatio; }
     int width() const { return _width; }
     const appload::vk::Layout *virtualKeyboardLayout() const { return _virtualKeyboardLayout; }
@@ -96,6 +101,7 @@ private:
     QString _id;
     QString _name;
     QString _icon;
+    QString _folder;
     bool _supportsScaling;
     bool _supportsRotation;
     bool _supportsVirtualKeyboard;
@@ -173,6 +179,7 @@ public:
                                                         entry.second->width(),
                                                         false,
                                                         NULL,
+                                                        entry.second->getFolder(),
                                                         this));
         }
         for (const auto &entry : appload::library::getExternals()) {
@@ -187,6 +194,7 @@ public:
                                                         0, // Let QTFB do the scaling here.
                                                         entry.second->disablesWindowedMode(),
                                                         entry.second->getVirtualKeyboardLayout(),
+                                                        entry.second->getFolder(),
                                                         this));
         }
     }

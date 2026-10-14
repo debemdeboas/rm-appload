@@ -73,6 +73,7 @@ The manifest file has the following properties:
 - supportsScaling: Whether or not the application supports arbitrary window sizes
 - aspectRatio: 'auto' (default) | 'original' | 'move' | float - defines the aspect ratio of screen the application is built for. Original - rM1 / rM2 / rMPP, move - rMPPM
 - width: 'auto' | 'original' | 'move' | float - defines the ideal width of the screen for this application. 'auto' defaults to the value specified by the 'aspectRatio' field. If that value is not specified, it chooses the width of the current device's screen
+- folder: The name of the launcher folder the application is shown in (optional). Applications with the same folder are grouped together; tapping the folder opens it
 
 Applications' backends have the ability to stay running in the background, and unless killed by the app, won't be stopped. To stop an application permanently, in the `unloading()` function in the root file, invoke `terminate()` on any of the endpoints. That call will kill the backend and immediately unload any still existing frontends.
 
@@ -104,6 +105,7 @@ The `external.manifest.json` file has the following properties:
 - qtfb: Boolean - whether or not to allocate a QTFB framebuffer for the application. The framebuffer's ID will be passed as the envvar `QTFB_KEY` to the application
 - disablesWindowedMode: Boolean - set to true to disable windowed mode for this particular application
 - aspectRatio: 'auto' (default) | 'original' | 'move' | float - see description in the "Applications' format" section
+- folder: The launcher folder the application is shown in (optional) - see description in the "Applications' format" section
 
 ## Launching applications programmatically
 

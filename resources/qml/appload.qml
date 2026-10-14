@@ -20,6 +20,31 @@ Rectangle {
     AppLoadLibrary {
         id: library
     }
+
+    // The open folder ("" for the top level). Apps name their folder in their
+    // manifest ("folder": "Games"); folders are listed first, then the apps
+    // without one.
+    property string folder: ""
+    readonly property var entries: {
+        const apps = [];
+        for(let app of library.applications) apps.push(app);
+        if(folder !== "") {
+            return apps.filter(app => app.folder === folder).map(app => ({ app: app, name: app.name }));
+        }
+        const folders = {};
+        const loose = [];
+        for(let app of apps) {
+            if(app.folder === "") {
+                loose.push({ app: app, name: app.name });
+            } else {
+                (folders[app.folder] = folders[app.folder] || []).push(app.icon);
+            }
+        }
+        const names = Object.keys(folders).sort((a, b) => a.localeCompare(b));
+        return names.map(name => ({ folder: name, name: name, icons: folders[name].slice(0, 4) })).concat(loose);
+    }
+    // A folder that disappeared (after a reload): back to the top
+    onEntriesChanged: if(folder !== "" && entries.length === 0) folder = ""
     function getResolutionOf(device) {
         switch(device) {
             case "original": return [1620, 2160];
@@ -134,7 +159,11 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: () => {
-                        _appLoadView.requestClose();
+                        if(_appLoadView.folder !== "") {
+                            _appLoadView.folder = "";
+                        } else {
+                            _appLoadView.requestClose();
+                        }
                     }
                 }
 
@@ -197,7 +226,7 @@ Rectangle {
 
             Text {
                 anchors.fill: parent
-                text: "AppLoad"
+                text: _appLoadView.folder || "AppLoad"
                 font.pointSize: 40
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -210,7 +239,7 @@ Rectangle {
             width: Math.floor((parent.width - 20) / cellWidth) * cellWidth
             height: parent.height - 100
             id: gridView
-            model: library.applications
+            model: _appLoadView.entries
             cellWidth: 200 + 20
             cellHeight: 200 + 20
             interactive: false
@@ -226,9 +255,35 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.margins: 10
                     id: appIcon
-                    source: modelData.icon
+                    visible: !modelData.folder
+                    source: modelData.folder ? "" : modelData.app.icon
                     width: 150
                     height: 150
+                }
+
+                // A folder: a frame with the icons of its first apps
+                Rectangle {
+                    anchors.fill: appIcon
+                    visible: !!modelData.folder
+                    radius: 20
+                    color: "transparent"
+                    border.width: 4
+                    border.color: "black"
+
+                    Grid {
+                        anchors.centerIn: parent
+                        columns: 2
+                        spacing: 8
+                        Repeater {
+                            model: modelData.folder ? modelData.icons : []
+                            Image {
+                                required property var modelData
+                                source: modelData
+                                width: 56
+                                height: 56
+                            }
+                        }
+                    }
                 }
 
                 Text {
@@ -246,11 +301,19 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: () => {
-                        launchWindow(modelData).maximize();
+                        if(modelData.folder) {
+                            _appLoadView.folder = modelData.folder;
+                            return;
+                        }
+                        launchWindow(modelData.app).maximize();
                     }
                     onPressAndHold: () => {
-                        const window = launchWindow(modelData);
-                        if(modelData.disablesWindowedMode) {
+                        if(modelData.folder) {
+                            _appLoadView.folder = modelData.folder;
+                            return;
+                        }
+                        const window = launchWindow(modelData.app);
+                        if(modelData.app.disablesWindowedMode) {
                             window.maximize();
                         }
                     }
