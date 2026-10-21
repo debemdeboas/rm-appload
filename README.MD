@@ -11,7 +11,9 @@ This extension depends on [qt-resource-rebuilder](https://github.com/asivery/rmp
 ## How to use?
 
 To put new apps on the tablet, place their directories in `/home/root/xovi/exthome/appload/`. To close fullscreen apps, drag your finger from the center-top of the screen to the center.
-To start an application as a window, long-press its icon in the AppLoad menu.
+To start an application as a window, long-press its icon in the AppLoad menu and choose "Launch windowed".
+
+Apps can be grouped in folders: long-press an app and choose "Move to folder" or "Create folder with" (then tap the other app). Long-press a folder to rename or remove it. The folders are kept in `/home/root/xovi/exthome/appload/folders.json`, as `{"<app id>": "<folder name>"}`; external applications' IDs are `external::<directory name>`.
 
 ## Applications' format
 
@@ -73,7 +75,6 @@ The manifest file has the following properties:
 - supportsScaling: Whether or not the application supports arbitrary window sizes
 - aspectRatio: 'auto' (default) | 'original' | 'move' | float - defines the aspect ratio of screen the application is built for. Original - rM1 / rM2 / rMPP, move - rMPPM
 - width: 'auto' | 'original' | 'move' | float - defines the ideal width of the screen for this application. 'auto' defaults to the value specified by the 'aspectRatio' field. If that value is not specified, it chooses the width of the current device's screen
-- folder: The name of the launcher folder the application is shown in (optional). Applications with the same folder are grouped together; tapping the folder opens it
 
 Applications' backends have the ability to stay running in the background, and unless killed by the app, won't be stopped. To stop an application permanently, in the `unloading()` function in the root file, invoke `terminate()` on any of the endpoints. That call will kill the backend and immediately unload any still existing frontends.
 
@@ -105,7 +106,6 @@ The `external.manifest.json` file has the following properties:
 - qtfb: Boolean - whether or not to allocate a QTFB framebuffer for the application. The framebuffer's ID will be passed as the envvar `QTFB_KEY` to the application
 - disablesWindowedMode: Boolean - set to true to disable windowed mode for this particular application
 - aspectRatio: 'auto' (default) | 'original' | 'move' | float - see description in the "Applications' format" section
-- folder: The launcher folder the application is shown in (optional) - see description in the "Applications' format" section
 
 ## Launching applications programmatically
 

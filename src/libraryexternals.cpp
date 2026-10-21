@@ -51,7 +51,6 @@ void appload::library::ExternalApplication::parseManifest() {
     execPath = jsonObject.value("application").toString();
 
     // Optional:
-    folder = jsonObject.value("folder").toString().trimmed();
     _isQTFB = jsonObject.value("qtfb").toBool(false);
     _supportsRotation = jsonObject.value("supportsRotation").toBool(false);
     _disablesWindowedMode = jsonObject.value("disablesWindowedMode").toBool(false);
@@ -131,10 +130,6 @@ QString appload::library::ExternalApplication::getIconPath() const {
 
 QString appload::library::ExternalApplication::getAppName() const {
     return appName;
-}
-
-QString appload::library::ExternalApplication::getFolder() const {
-    return folder;
 }
 
 bool appload::library::ExternalApplication::isQTFB() const {

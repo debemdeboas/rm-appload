@@ -46,7 +46,6 @@ namespace appload::library {
         ExternalApplication(QString root);
         QString getIconPath() const;
         QString getAppName() const;
-        QString getFolder() const;
         qint64 launch(int qtfbKey, QStringList extraArgs, QMap<QString, QString> extraEnv) const;
         bool isQTFB() const;
         float aspectRatio() const;
@@ -61,7 +60,6 @@ namespace appload::library {
         QString root;
 
         QString appName;
-        QString folder;
         QString execPath;
 
         QString workingDirectory;
@@ -87,7 +85,6 @@ namespace appload::library {
 
         QString getIconPath() const;
         QString getAppName() const;
-        QString getFolder() const;
         QString getID() const;
         QString getFrontendRoot() const;
         QString getQMLEntrypoint() const;
@@ -104,7 +101,7 @@ namespace appload::library {
         int loadedFrontendInstanceCount = 0;
     private:
         QString root;
-        QString appName, appID, qmlEntrypoint, folder;
+        QString appName, appID, qmlEntrypoint;
         QString frontendRoot;
         QString internalIdentifier;
         bool loadsBackend;
@@ -118,6 +115,11 @@ namespace appload::library {
     };
 
     int loadApplications();
+
+    // The launcher's folders, kept in folders.json in the applications'
+    // directory as {"<app id>": "<folder>"}. The user puts apps in folders.
+    QString folderOf(const QString &appID);
+    void setFolder(const QStringList &appIDs, const QString &folder);
     void terminateExternal(qint64 pid);
     void addGlobalLibraryHandle(AppLoadLibrary *ptr);
     void removeGlobalLibraryHandle(AppLoadLibrary *ptr);

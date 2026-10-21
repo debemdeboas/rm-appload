@@ -137,6 +137,12 @@ public:
         return count;
     }
 
+    // Puts apps in a folder ("" takes them out of theirs) and saves folders.json.
+    Q_INVOKABLE void setFolder(const QStringList &appIDs, const QString &folder) {
+        appload::library::setFolder(appIDs, folder);
+        emit applicationsChanged();
+    }
+
     Q_INVOKABLE bool isFrontendRunningFor(const QString &appID) {
         auto app = appload::library::get(appID);
         if(app) {
@@ -179,7 +185,7 @@ public:
                                                         entry.second->width(),
                                                         false,
                                                         NULL,
-                                                        entry.second->getFolder(),
+                                                        appload::library::folderOf(entry.second->getID()),
                                                         this));
         }
         for (const auto &entry : appload::library::getExternals()) {
@@ -194,7 +200,7 @@ public:
                                                         0, // Let QTFB do the scaling here.
                                                         entry.second->disablesWindowedMode(),
                                                         entry.second->getVirtualKeyboardLayout(),
-                                                        entry.second->getFolder(),
+                                                        appload::library::folderOf(entry.first),
                                                         this));
         }
     }
